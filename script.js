@@ -1,75 +1,119 @@
-let playerText = document.getElementById(`playerText`)
-let restartBtn = document.getElementById(`restartBtn`)
-let boxes =Array.from(document.getElementsByClassName(`box`))
+window.addEventListener('DOMContentLoaded', () => {
+    const tiles = Array.from(document.querySelectorAll('.tile'));
+    const playerDisplay = document.querySelector('.display-player');
+    const resetButton = document.querySelector('#reset');
+    const announcer = document.querySelector('.announcer');
 
- let winnerIndicator = getComputedStyle(document.body).getPropertyValue(`--winning-blocks`)
+    let board = ['', '', '', '', '', '', '', '', ''];
+    let currentPlayer = 'X';
+    let isGameActive = true;
 
- const O_TEXT = "O"
- const X_TEXT = "X"
- let currentPlayer = X_TEXT
-let spaces = Array(9).fill(null)
+    const PLAYERX_WON = 'PLAYERX_WON';
+    const PLAYERO_WON = 'PLAYERO_WON';
+    const TIE = 'TIE';
 
-const startgame = () => {
-    boxes.forEach(box => box.addEventListener('click',boxClicked))
-}
 
-function boxClicked(e) {
-   const id = e.target.id
 
-   if(!spaces[id]) {
-    spaces[id] = currentPlayer
-    e.target.innerText = currentPlayer
 
-    if(playerHasWon() !==false){
-        playerText = `${currentPlayer}  has won!` 
-        let winning_blocks = playerHasWon()
+    const winningConditions = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6]
+    ];
 
-        winning_blocks.map( box => boxes[box].style.backgroundColor=winnerIndicator)
-        return
+    function handleResultValidation() {
+        let roundWon = false;
+        for (let i = 0; i <= 7; i++) {
+            const winCondition = winningConditions[i];
+            const a = board[winCondition[0]];
+            const b = board[winCondition[1]];
+            const c = board[winCondition[2]];
+            if (a === '' || b === '' || c === '') {
+                continue;
+            }
+            if (a === b && b === c) {
+                roundWon = true;
+                break;
+            }
+        }
 
-       
+    if (roundWon) {
+            announce(currentPlayer === 'X' ? PLAYERX_WON : PLAYERO_WON);
+            isGameActive = false;
+            return;
+        }
+
+    if (!board.includes(''))
+        announce(TIE);
     }
 
-    currentPlayer = currentPlayer == X_TEXT ? O_TEXT : X_TEXT
-   }
-}
+    const announce = (type) => {
+        switch(type){
+            case PLAYERO_WON:
+                announcer.innerHTML = 'Player <span class="playerO">O</span> Won';
+                break;
+            case PLAYERX_WON:
+                announcer.innerHTML = 'Player <span class="playerX">X</span> Won';
+                break;
+            case TIE:
+                announcer.innerText = 'Tie';
+        }
+        announcer.classList.remove('hide');
+    };
 
-const winningCombos = [
-    [0,1,2],
-    [3,4,5],
-    [6,7,8],
-    [0,3,6],
-    [1,4,7],
-    [2,5,8],
-    [0,4,8],
-    [2,4,6],
+    const isValidAction = (tile) => {
+        if (tile.innerText === 'X' || tile.innerText === 'O'){
+            return false;
+        }
 
-]
+        return true;
+    };
 
-function playerHasWon(){
-    for (const condition of winningCombos){
-        let [a, b, c] = condition
+    const updateBoard =  (index) => {
+        board[index] = currentPlayer;
+    }
 
-        if(spaces[a] && (spaces[a] == spaces[b] && spaces[a] == spaces[c])) {
-            return [a,b,c]
+    const changePlayer = () => {
+        playerDisplay.classList.remove(`player${currentPlayer}`);
+        currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+        playerDisplay.innerText = currentPlayer;
+        playerDisplay.classList.add(`player${currentPlayer}`);
+    }
+
+    const userAction = (tile, index) => {
+        if(isValidAction(tile) && isGameActive) {
+            tile.innerText = currentPlayer;
+            tile.classList.add(`player${currentPlayer}`);
+            updateBoard(index);
+            handleResultValidation();
+            changePlayer();
         }
     }
-    return false
+    
+    const resetBoard = () => {
+        board = ['', '', '', '', '', '', '', '', ''];
+        isGameActive = true;
+        announcer.classList.add('hide');
 
-}
+        if (currentPlayer === 'O') {
+            changePlayer();
+        }
 
-restartBtn.addEventListener('click',restart)
-function restart(){
-    spaces.fill(null)
+        tiles.forEach(tile => {
+            tile.innerText = '';
+            tile.classList.remove('playerX');
+            tile.classList.remove('playerO');
+        });
+    }
 
-    boxes.forEach(box => {
-        box.innerText = ''
-        box.style.backgroundColor=``
-    })
+    tiles.forEach( (tile, index) => {
+        tile.addEventListener('click', () => userAction(tile, index));
+    });
 
-    playerText = `Tic Tac Toe`
-
-    currentPlayer = X_TEXT
-}
-
- startgame()
+    resetButton.addEventListener('click', resetBoard);
+});

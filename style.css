@@ -1,66 +1,84 @@
-*{
-    margin: 0;
+* {
     padding: 0;
-    box-sizing: border-box;
+    margin: 0;
+    font-family: 'Itim', cursive;
 }
 
-:root{
-    --orange: #F2C14E;
-    --winning-blocks: #2d414b;
-
-}
-
-body{
-    color: var(--orange);
-    font-family: 'Josefin Sans', sans-serif;
-}
-h1{
-    font-size: 54px;
-    text-transform: uppercase;
-}
-.container{
-    padding: 40px;
+.background {
+    background-color: #12181B;
     height: 100vh;
+    padding-top: 1px;
+}
+
+.title {
+    color: rgb(247, 137, 12);
+    text-align: center;
+    font-size: 40px;
+    margin-top: 10%;
+}
+
+.display {
+    color: white;
+    font-size: 25px;
+    text-align: center;
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+.hide {
+    display: none;
+}
+
+.container {
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 33% 33% 33%;
+    grid-template-rows: 33% 33% 33%;
+    max-width: 300px;
+
+}
+
+.tile {
+    border: 1px solid white;
+    min-width: 100px;
+    min-height: 100px;
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-direction: column;
-    background-color: #37505c;
-}
-#gameboard{
-    width: 450px;
-    display: flex;
-    flex-wrap: wrap;
-    margin-top: 40px;
-}
-.box{
-    height: 150px;
-    width: 150px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--orange);
-    font-size: 120px;
-    border-right: 2px solid;
-    border-bottom: 2px solid;
-}
-.box:nth-child(3n){
-    border-right: none;
-}
-.box:nth-child(6) ~ .box{
-    border-bottom: none;
-}
-button{
-    padding: 10px 20px;
-    border-radius: 10px;
-    background-color: var(--orange);
-    color: #333;
-    border-color: var(--orange);
-    font-size: 20px;
-    transition: 200ms transform;
-    font-weight: 600;
-}
-button:hover{
+    font-size: 50px;
     cursor: pointer;
-    transform: translateY(-2px);
+}
+
+.playerX {
+    color: #ee7606;
+}
+
+.playerO {
+    color: red;
+}
+
+.controls {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1em;
+}
+
+.controls button {
+    color: white;
+    padding: 8px;
+    border-radius: 8px;
+    border: none;
+    font-size: 20px;
+    margin-left: 1em;
+    cursor: pointer;
+}
+
+.restart {
+    background-color: #498AFB;
+}
+
+#reset {
+    background-color: #e93a0e;
 }
